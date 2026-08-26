@@ -1,30 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TestApi.Data;
 
-namespace TestApi
+namespace TestApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class TaskItemController : ControllerBase
     {
+        private readonly AppDbContext _dbContext;
+        public TaskItemController(AppDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
         [HttpGet]
         [Route("GetTasks")]
-        public IActionResult GetTasks() 
+        public async Task<IActionResult> GetTasks() 
         {
-            List<TaskItem> taskItems = new List<TaskItem>();
-            TaskItem taskItem = new TaskItem(
-                1,
-                "Sample Task",
-                false,
-                DateTime.Now
-            );
-            TaskItem taskItem2 = new TaskItem(
-                2,
-                "Sample Task 2",
-                true,
-                DateTime.Today.AddDays(-1)
-            );
-            taskItems.Add(taskItem);
-            taskItems.Add(taskItem2);
+            var taskItems = await _dbContext.TaskItems.ToListAsync();
             return Ok(taskItems);
         }
     }
