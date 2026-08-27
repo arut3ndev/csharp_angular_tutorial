@@ -1,6 +1,6 @@
 public class TaskItem
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public string Title { get; set; }
     public bool IsCompleted { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -13,11 +13,11 @@ public class TaskItem
         CreatedAt = DateTime.Now;
     }
 
-    public TaskItem(int id, string title, bool isCompleted, DateTime createdAt)
+    public TaskItem(long id, string title)
     {
         Id = id;
         Title = title;
-        IsCompleted = isCompleted;
-        CreatedAt = createdAt;
+        IsCompleted = false;
+        CreatedAt = DateTime.Now;
     }
 }
