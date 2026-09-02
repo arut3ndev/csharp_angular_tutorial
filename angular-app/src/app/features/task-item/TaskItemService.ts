@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 @Injectable({providedIn: 'root'})
 export class TaskItemService {
     httpClient : HttpClient = inject(HttpClient)
-    private readonly apiUrl : string = 'http://localhost:8080/api/TaskItem';
+    private readonly apiUrl : string = 'http://localhost:8080/api/taskItem';
 
     getAllTasks() : Observable<TaskItemModel[]> {
         return this.httpClient.get<TaskItemModel[]>(this.apiUrl);

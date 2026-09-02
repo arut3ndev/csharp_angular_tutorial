@@ -1,1 +1,13 @@
 <p>task-item works!</p>
+
+@if (loadingState === LoadingState.LOADING) {
+  <p>Loading...</p>
+} @else if (loadingState === LoadingState.ERROR) {
+  <p>Error loading task items.</p>
+} @else {
+  <ul>
+    @for (task of listOfTaskItems; track task.id) {
+      <li>{{ task.title }}</li>
+    }
+  </ul>
+}
