@@ -11,4 +11,8 @@ export class TaskItemService {
     getAllTasks() : Observable<TaskItemModel[]> {
         return this.httpClient.get<TaskItemModel[]>(this.apiUrl);
     }
+
+    postTaskItem(post: TaskItemModel): Observable<TaskItemModel> {
+    return this.httpClient.post<TaskItemModel>(this.apiUrl, post);
+  } 
 }

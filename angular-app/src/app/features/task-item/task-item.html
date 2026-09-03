@@ -1,4 +1,12 @@
 <p>task-item works!</p>
+<button type="button" (click)="refresh()">Manual Refresh</button>
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+  <input formControlName="title" placeholder="New task title" />
+  @if (taskForm.get('title')?.invalid && taskForm.get('title')?.touched) {
+    <p>Title is required (min 2 characters).</p>
+  }
+  <button type="submit" [disabled]="taskForm.invalid">Add Task</button>
+</form>
 
 @if (loadingState === LoadingState.LOADING) {
   <p>Loading...</p>
@@ -7,7 +15,7 @@
 } @else {
   <ul>
     @for (task of listOfTaskItems; track task.id) {
-      <li>{{ task.title }}</li>
+      <li>{{ task.title }} | <input type="checkbox"> | <button>delete</button></li>
     }
   </ul>
 }
