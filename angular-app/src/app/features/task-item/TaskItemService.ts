@@ -12,7 +12,16 @@ export class TaskItemService {
         return this.httpClient.get<TaskItemModel[]>(this.apiUrl);
     }
 
-    postTaskItem(post: TaskItemModel): Observable<TaskItemModel> {
-    return this.httpClient.post<TaskItemModel>(this.apiUrl, post);
-  } 
+    postTaskItem(task: TaskItemModel): Observable<TaskItemModel> {
+    return this.httpClient.post<TaskItemModel>(this.apiUrl, task);
+    }
+    
+    putTaskItem(task: TaskItemModel): Observable<TaskItemModel> {
+      return this.httpClient.put<TaskItemModel>(`${this.apiUrl}/${task.id}`, task);
+    }
+
+    deleteTaskItem(taskId: number): Observable<void> {
+      return this.httpClient.delete<void>(`${this.apiUrl}/${taskId}`);
+    }
+      
 }

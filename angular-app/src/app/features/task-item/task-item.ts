@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, signal} from '@angular/core';
 import { TaskItemModel } from './TaskItemModel';
 import { TaskItemService } from './TaskItemService';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -18,8 +18,8 @@ enum LoadingState {
   styleUrl: './task-item.css',
 })
 export class TaskItem implements OnInit{
-  listOfTaskItems: TaskItemModel[] = [];
-  loadingState: LoadingState = LoadingState.LOADING;
+  listOfTaskItems = signal<TaskItemModel[]>([]);
+  loadingState = signal<LoadingState>(LoadingState.DONE);
   readonly LoadingState = LoadingState;
   refreshCounter: number = 0;
 
@@ -36,32 +36,19 @@ export class TaskItem implements OnInit{
   }
 
   refresh(): void {
-  console.log('refresh() called');
-
-  this.loadingState = LoadingState.LOADING;
-
+  this.loadingState.set(LoadingState.LOADING);
   this.taskItemService.getAllTasks().subscribe({
     next: (tasks: TaskItemModel[]) => {
-      this.listOfTaskItems = tasks;
-      this.loadingState = LoadingState.DONE;
-
-      console.log('STATE:', this.loadingState);
-      console.log('DONE:', LoadingState.DONE);
+      this.listOfTaskItems.set(tasks);
+      this.loadingState.set(LoadingState.DONE);
     },
-
     error: (error) => {
       console.log('ERROR:', error);
-
-      this.loadingState = LoadingState.ERROR;
-    },
-
-    complete: () => {
-      console.log('REQUEST COMPLETE');
     }
   });
 }
 
-  onSubmit(){
+  onSubmit(): void{
     if (!this.taskForm.valid) return;
     const title = this.taskForm.get('title')?.value!;
     const newTask = new TaskItemModel(0, title, false, new Date());
@@ -71,6 +58,31 @@ export class TaskItem implements OnInit{
       },
       error: (error) => {
         alert("error adding item: " + error);
+      }
+    })
+  }
+
+  onToggleChange(taskItem: TaskItemModel, event: Event) : void{
+    const checkboxState = (event.target as HTMLInputElement).checked;
+    taskItem.isComplete = checkboxState;
+    this.taskItemService.putTaskItem(taskItem).subscribe({
+      next: (task) => {
+        this.refresh();
+      },
+      error: (error) => {
+        alert("error updating item: " + error);
+      }
+    })
+  }
+
+  onDeleteClick(taskItem: TaskItemModel) : void {
+    const taskId = taskItem.id;
+    this.taskItemService.deleteTaskItem(taskId).subscribe({
+      next: () => {
+        this.refresh();
+      },
+      error: (error) => {
+        alert("error deleting item: " + error);
       }
     })
   }

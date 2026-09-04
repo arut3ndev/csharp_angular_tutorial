@@ -8,14 +8,18 @@
   <button type="submit" [disabled]="taskForm.invalid">Add Task</button>
 </form>
 
-@if (loadingState === LoadingState.LOADING) {
+@if (loadingState() === LoadingState.LOADING) {
   <p>Loading...</p>
-} @else if (loadingState === LoadingState.ERROR) {
+} @else if (loadingState() === LoadingState.ERROR) {
   <p>Error loading task items.</p>
 } @else {
   <ul>
-    @for (task of listOfTaskItems; track task.id) {
-      <li>{{ task.title }} | <input type="checkbox"> | <button>delete</button></li>
+    @for (task of listOfTaskItems(); track task.id) {
+      <li>
+        {{ task.title }}
+        <input type="checkbox" [checked]="task.isComplete" (change)="onToggleChange(task, $event)"/>
+        <button (click)="onDeleteClick(task)">delete</button>
+      </li>
     }
   </ul>
 }
